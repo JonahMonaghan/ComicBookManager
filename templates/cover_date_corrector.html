@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cover Date Corrector</title>
+</head>
+<body>
+    <h1>Cover Date Corrector</h1>
+    
+    {% if not approved_data %}
+        <form method="post" action="/tools/cover_date_corrector">
+            <label for="sid">Enter Series ID (SID):</label>
+            <input type="text" id="sid" name="sid" required>
+            <button type="submit">Confirm SID</button>
+        </form>
+
+        <!-- Display Current Data in a Table -->
+        {% if not data.empty %}
+            <h2>Current Data</h2>
+            {{ data.to_html()|safe }}
+
+            <!-- Additional Filters -->
+            <h2>Additional Filters</h2>
+            <form method="post" action="/tools/cover_date_corrector">
+                <label for="filter_term">Filter Term:</label>
+                <input type="text" id="filter_term" name="filter_term">
+                <button type="submit">Add Filter</button>
+            </form>
+
+            <!-- Fetch New Data -->
+            <form method="post" action="/tools/cover_date_corrector">
+                <input type="hidden" name="fetch_button" value="fetch_data">
+                <button type="submit" id="force_fetch">Fetch New Data</button>
+            </form>
+
+            <!-- Approve Data -->
+            <form method="post" action="/tools/cover_date_corrector">
+                <input type="hidden" name="approve_button" value="approve_data">
+                <button type="submit" id="approve">Approve Data</button>
+            </form>
+        {% endif %}
+    {% endif%}
+    
+    {% if approved_data %}
+        <form method="post" action="/tools/cover_date_corrector">
+            <label for="search_criteria">Enter the Search Criteria for OneDrive:</label>
+            <input type="text" id="search_criteria" name="search_criteria" required>
+            <button type="submit">Confirm Search</button>
+        </form>
+
+        {% if not drive_data.empty %}
+            <div id="search-results">
+                <table>
+                    <tr>
+                        <th>File Name</th>
+                        <th>Folder Name</th>
+                        <th>Parent Folder</th>
+                        <th>Actions</th>
+                    </tr>
+                    {% for index, row in drive_data.iterrows() %}
+                        <tr>
+                            <td>{{ row['File Name'] }}</td>
+                            <td>{{ row['Folder Name'] }}</td>
+                            <td>{{ row['File ID'] }}</td>
+                            <td>
+                                <form action="/tools/cover_date_corrector" method="post">
+                                    <input type="hidden" name="remove_entry" value="{{ row['File Name']}}">
+                                    <button type="submit">Remove</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="/tools/cover_date_corrector" method="post">
+                                    <input type="hidden" name="remove_all_after" value="{{ loop.index }}">
+                                    <button type="submit">Remove All After</button>
+                                </form>
+                            </td>
+                            
+                        </tr>
+                    {% endfor %}
+                </table>
+                <form action="/tools/cover_date_corrector" method="post">
+                    <input type="hidden" name="approve_drive_button" value="approve_drive_data">
+                    <button type="submit">Approve Data</button>
+                </form>
+            </div>
+        {% endif %}
+    
+    {% endif %}
+</body>
+</html>

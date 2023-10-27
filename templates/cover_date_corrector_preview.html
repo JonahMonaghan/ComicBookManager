@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Final Data Preview</title>
+    <!-- Add any CSS styles or libraries you may need here -->
+</head>
+<body>
+    <h1>Final Data Preview</h1>
+    
+    <h2>Data Preview</h2>
+    <table>
+        <tr>
+            <th>File Name</th>
+            <th>MAW Issue Name</th>
+            <th>MAW Cover Date</th>
+            <th>Destination Folder</th>
+        </tr>
+        {% for index, row in data.iterrows() %}
+        <tr>
+            <td>{{ row['File Name'] }}</td>
+            <td>{{ row['Issue Name'] }}</td>
+            <td>{{ row['Cover Date'] }}</td>
+            <td>{{ row['Destination Folder'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <form action="/tools/cover_date_corrector/finalize" method="post">
+        <label for="dc">DC</label>
+        <input type="radio" id="dc" name="publisher" value="DC">
+                
+        <label for="marvel">Marvel</label>
+        <input type="radio" id="marvel" name="publisher" value="Marvel">
+                
+        <label for="other">Other</label>
+        <input type="radio" id="other" name="publisher" value="Other">      
+        <input type="hidden" name="approve_preview_button" value="approve_preview_data">
+        <button type="submit">Approve Preview</button>
+    </form>
+</body>
+</html>
