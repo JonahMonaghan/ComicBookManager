@@ -166,3 +166,4 @@ app_config.py
 
 #Other stuff to ignore
 .vscode/
+flask_session/

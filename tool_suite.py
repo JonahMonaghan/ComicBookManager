@@ -259,7 +259,7 @@ class DriveDataManager():
 
 class CSVManager():
 
-    FILEROOT = "ComicBookManager\CSVs"
+    FILEROOT = "CSVs"
 
     @staticmethod
     def write_to_csv(sid, issueArray, dateArray):
