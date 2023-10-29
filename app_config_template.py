@@ -1,6 +1,6 @@
 CLIENT_ID = "" #YOUR CLIENT ID HERE
 CLIENT_SECRET = "" #YOUR CLIENT SECRET HERE
-AUTHORITY = "https://login.microsoftonline.com/common"
-REDIRECT_PATH = "/get_token" #THIS CHANGES BASED ON YOUR AZURE SETTINGS
-SCOPE = ["Files.ReadWrite.All"]
+AUTHORITY = "https://login.microsoftonline.com/common" #CHANGE BASED ON YOUR NEEDS
+REDIRECT_PATH = "/get_token" #CHANGE BASED ON YOUR NEEDS
+SCOPE = ["Files.ReadWrite.All"] #CHANGE BASED ON YOUR NEEDS
 SESSION_TYPE = "filesystem"

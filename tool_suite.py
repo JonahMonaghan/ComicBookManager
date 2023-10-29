@@ -119,6 +119,12 @@ class CoverDateCorrector():
         }
 
         return month_mapping.get(month_name, "Unknown Month")
+    
+
+class MonthlyPackageGenerator():
+    
+    def __init__(self):
+        pass
 
 
 class FilterManager():
