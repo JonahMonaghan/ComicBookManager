@@ -18,10 +18,12 @@ class ComicBookManagerApp:
         self.app.add_url_rule("/tools", "tools", self.tools)
         self.app.add_url_rule("/tools/cover_date_corrector", "cover_date_corrector", self.cover_date_corrector, methods=['GET', 'POST'])
         self.app.add_url_rule("/tools/cover_date_corrector/finalize", "cover_date_corrector_finalize", self.cover_date_corrector_finalize, methods=['GET', 'POST', 'PATCH'])
+        self.app.add_url_rule("/tools/monthly_package_generator", "create_monthly_package_folder_structure", self.create_monthly_package_folder_structure, methods=['GET', 'POST'])
     
     def index(self):
         if not self.check_for_user():
             return redirect(url_for("login"))
+        self.cdc.reset_corrector()
         return render_template('index.html', user=session["user"])
     
     def tools(self):
@@ -146,6 +148,59 @@ class ComicBookManagerApp:
             return self.cdc.drive_data.parse_graph_response_to_monthly_package_folder_id(data['value'])
         else:
             print("Error getting folder ID")
+
+    def create_monthly_package_folder_structure(self):
+        base_url = "https://graph.microsoft.com/v1.0/me/drive"
+        headers = {
+            "Authorization": "Bearer " + session.get("access_token"),
+            "Content-Type": "application/json"
+        }
+
+        start_year = 1960
+        end_year = 2023
+
+        years = list(range(start_year, end_year + 1))
+
+        months = {
+            1: "01 - January",
+            2: "02 - February",
+            3: "03 - March",
+            4: "04 - April",
+            5: "05 - May",
+            6: "06 - June",
+            7: "07 - July",
+            8: "08 - August",
+            9: "09 - September",
+            10: "10 - October",
+            11: "11 - November",
+            12: "12 - December"
+        }
+
+        # Iterate through years
+        for year in years:
+            # Create a folder for the year
+            year_folder_name = str(year)
+            year_folder_url = base_url + "/root/children"
+            year_payload = {
+                "name": year_folder_name,
+                "folder": {}
+            }
+
+            year_response = requests.post(year_folder_url, data=json.dumps(year_payload), headers=headers)
+            year_folder_id = year_response.json()["id"]
+
+            # Iterate through months
+            for month_id, month_name in months.items():
+                month_folder_name = f"{month_name}"
+                month_folder_url = f"{base_url}/items/{year_folder_id}/children"
+                month_payload = {
+                    "name": month_folder_name,
+                    "folder": {}
+                }
+
+                requests.post(month_folder_url, data=json.dumps(month_payload), headers=headers)
+        
+        return redirect(url_for("index"))
         
     def create_comic_folder_structure(self, root_folder_id):
         # Initialize the root folder structure

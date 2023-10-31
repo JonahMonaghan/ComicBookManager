@@ -14,6 +14,13 @@ class CoverDateCorrector():
         self.maw_data = MAWDataManager()
         self.drive_data = DriveDataManager()
 
+    def reset_corrector(self):
+        self.seriesid = None
+        self.final_filtered_data = None
+        self.final_drive_data = None
+        self.maw_data = MAWDataManager()
+        self.drive_data = DriveDataManager()
+
     def set_SID(self, sid):
         self.seriesid = sid
         self.maw_data.set_series_id(sid)
